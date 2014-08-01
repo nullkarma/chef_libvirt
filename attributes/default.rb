@@ -1,24 +1,24 @@
 default['libvirt']['hooks'] = []
 default['libvirt']['packages'] = value_for_platform(
-  [ 'centos', 'redhat', 'suse', 'fedora' ] => {
+  %w(centos redhat suse fedora) => {
     'default' => 'libvirt'
   },
-  [ 'exherbo', 'archlinux' ] => {
+  %w(exherbo archlinux) => {
     'default' => 'libvirt'
   },
-  [ 'ubuntu', 'debian'] => {
-    'default' => [ 'libvirt-bin' ]
+  %w(ubuntu debian) => {
+    'default' => ['libvirt-bin']
   }
 )
 default['libvirt']['service'] = value_for_platform(
-  [ 'centos', 'redhat', 'suse', 'fedora' ] => {
+  %w(centos redhat suse fedora) => {
     'default' => 'libvirt'
   },
-  [ 'exherbo', 'archlinux' ] => {
+  %w(exherbo archlinux) => {
     'default' => 'libvirtd'
   },
-  [ 'ubuntu', 'debian'] => {
-    'default' => [ 'libvirt-bin' ]
+  %w(ubuntu debian) => {
+    'default' => ['libvirt-bin']
   }
 )
 

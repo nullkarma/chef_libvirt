@@ -40,7 +40,6 @@ unless node['libvirt']['data_bags'].nil?
       pools = Chef::Mixin::DeepMerge.merge(hooks, bag_item['hooks'])
     end
 
-
   end
 
   node.set['libvirt']['domains'] = domains

@@ -1,0 +1,15 @@
+<% @variables.sort.each do |key, value| %>
+<% next if value.nil? %>
+<%= key.gsub('_', '-') %>=<%=
+  case value
+  when TrueClass
+    '1'
+  when FalseClass
+    '0'
+  when Array
+    value.join(',')
+  else
+    value
+  end
+%>
+<% end %>

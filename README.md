@@ -11,7 +11,27 @@ Example hook data_bag
   "content": {
     [
       "#!/bin/sh",
-      "echo $@"
+      "echo $@",
+      "network_up() {",
+      "  echo up",
+      "}",
+      "network_down() {",
+      "  echo down",
+      "}",
+      "name=$1",
+      "task=$2",
+      "xml=/tmp/libvirt.$0.$name.$$",
+      "trap 'rm -f $xml;' EXIT SIGINT SIGQUIT",
+      "cat - > $xml",
+      "case $task in",
+      "started)",
+      ";;",
+      "release)",
+      ";;",
+      "*)",
+      "  echo 'qemu hook called with unexpected options ' $@ >&2",
+      ";;",
+      "esac"
     ]
   }
 }

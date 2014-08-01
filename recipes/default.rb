@@ -4,15 +4,15 @@ unless node['libvirt']['hooks'].nil?
   node['libvirt']['hooks'].each do |name, options|
     next unless options['type'].nil?
 
-    hook_path = ""
-    hook_dir = ""
+    hook_path = ''
+    hook_dir = ''
 
     case options['type']
-    when 'daemon','qemu','lxc','network'
+    when 'daemon', 'qemu', 'lxc', 'network'
       hook_dir = ::File.join(node['libvirt']['conf.d'], 'hooks', options['type'])
       hook_path = ::File.join(hook_dir, name)
     else
-      Chef::Log.error("unknown libvirt hook type: " + options['type'])
+      Chef::Log.error('unknown libvirt hook type: ' + options['type'])
     end
 
     directory hook_dir do
@@ -36,3 +36,11 @@ unless node['libvirt']['hooks'].nil?
 
 end
 
+template '/etc/libvirt/libvirtd.conf' do
+  source 'libvirtd.conf.erb'
+  owner node['libvirt']['user']
+  group node['libvirt']['group']
+  mode 00750
+  notifies :reload, "service[#{node['libvirt']['service_name']}]", :delayed
+  variables { { variables => node['libvirt']['libvirtd'] } }
+end
