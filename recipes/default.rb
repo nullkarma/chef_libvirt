@@ -53,7 +53,7 @@ end
 
 unless node['libvirt']['network'].nil?
   node['libvirt']['network'].each do |k, v|
-    libvirt_network k do
+    network k do
       action v['action']
     end
   end
