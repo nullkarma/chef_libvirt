@@ -23,3 +23,4 @@ default['libvirt']['service'] = value_for_platform(
 )
 
 default['libvirt']['conf.d'] = '/etc/libvirt'
+default['libvirt']['libvirt_service'] = 'libvirtd-bin'

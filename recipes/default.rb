@@ -1,4 +1,8 @@
 
+service node['libvirt']['libvirt_service'] do
+ action [:enable, :start]
+end
+
 unless node['libvirt']['hooks'].nil?
 
   node['libvirt']['hooks'].each do |name, options|
@@ -29,7 +33,7 @@ unless node['libvirt']['hooks'].nil?
       owner node['libvirt']['user']
       group node['libvirt']['group']
       action :create
-      notifies :reload, "service[#{node['libvirt']['service_name']}]", :delayed
+      notifies :reload, "service[#{node['libvirt']['libvirt_service']}]", :delayed
     end
 
   end
@@ -41,6 +45,6 @@ template '/etc/libvirt/libvirtd.conf' do
   owner node['libvirt']['user']
   group node['libvirt']['group']
   mode 00750
-  notifies :reload, "service[#{node['libvirt']['service_name']}]", :delayed
+  notifies :reload, "service[#{node['libvirt']['libvirt_service']}]", :delayed
   variables { { variables => node['libvirt']['libvirtd'] } }
 end
