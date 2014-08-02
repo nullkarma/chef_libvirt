@@ -1,15 +1,15 @@
 <% @vars.each do |key, value| %>
 <% next if value.nil? %>
-<%= key %>=<%=
+<%= key %>="<%=
   case value
   when TrueClass
-    '1'
+    1
   when FalseClass
-    '0'
+    0
   when Array
     value.join(',')
   else
     value
   end
-%>
+%>"
 <% end %>
