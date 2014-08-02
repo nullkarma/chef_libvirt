@@ -1,4 +1,4 @@
-<% node['libvirt']['libvirtd'].each do |key, value| %>
+<% @vars.each do |key, value| %>
 <% next if value.nil? %>
 <%= key %>=<%=
   case value
