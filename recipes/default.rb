@@ -46,5 +46,15 @@ template '/etc/libvirt/libvirtd.conf' do
   group node['libvirt']['group']
   mode 00750
   notifies :reload, "service[#{node['libvirt']['libvirt_service']}]", :delayed
-  variables { { variables => node['libvirt']['libvirtd'] } }
+  variables({
+              :variables => node['libvirt']['libvirtd']
+            }}
+end
+
+unless node['libvirt']['network'].nil?
+  node['libvirt']['network'].each do |k, v|
+    libvirt_network k do
+      action v['action']
+    end
+  end
 end
