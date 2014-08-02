@@ -5,6 +5,8 @@ def whyrun_supported?
 end
 
 action :destroy do
-  virsh = Mixlib::ShellOut.new("virsh net-destroy #{new_resource.name}")
-  virsh.run_command
+  execute "virsh net-destroy #{new_resource.name}" do
+    command "virsh net-destroy #{new_resource.name}"
+    not_if { Mixlib::ShellOut.new("virsh net-list | grep -q #{new_resource.name}") }
+  end
 end

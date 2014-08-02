@@ -47,6 +47,19 @@ template '/etc/libvirt/libvirtd.conf' do
   variables({ :variables => node['libvirt']['libvirtd'] })
 end
 
+unless node['libvirt']['libvirt-bin'].nil?
+  template '/etc/default/libvirt-bin' do
+    source 'libvirt-bin.erb'
+    action :create
+    mode 00644
+    owner 'root'
+    group 'root'
+    variables({ :vars => node['libvirt']['libvirt-bin'] })
+    notifies :reload, "service[#{node['libvirt']['libvirt_service']}]", :delayed
+  end
+end
+
+
 unless node['libvirt']['network'].nil?
   node['libvirt']['network'].each do |k, v|
     libvirt_network k do
