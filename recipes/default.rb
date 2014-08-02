@@ -1,6 +1,6 @@
 
 service node['libvirt']['libvirt_service'] do
- action [:enable, :start]
+  action [:enable, :start]
 end
 
 unless node['libvirt']['hooks'].nil?
