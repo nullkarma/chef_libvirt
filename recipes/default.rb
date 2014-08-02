@@ -35,9 +35,7 @@ unless node['libvirt']['hooks'].nil?
       action :create
       notifies :reload, "service[#{node['libvirt']['libvirt_service']}]", :delayed
     end
-
   end
-
 end
 
 template '/etc/libvirt/libvirtd.conf' do
@@ -46,9 +44,7 @@ template '/etc/libvirt/libvirtd.conf' do
   group node['libvirt']['group']
   mode 00750
   notifies :reload, "service[#{node['libvirt']['libvirt_service']}]", :delayed
-  variables({
-              :variables => node['libvirt']['libvirtd']
-            }}
+  variables({ :variables => node['libvirt']['libvirtd'] })
 end
 
 unless node['libvirt']['network'].nil?
