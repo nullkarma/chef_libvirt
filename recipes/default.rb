@@ -59,10 +59,24 @@ unless node['libvirt']['libvirt-bin'].nil?
   end
 end
 
+unless node['libvirt']['users'].nil?
+  group node['libvirt']['group'] do
+    members node['libvirt']['users']
+    action :manage
+  end
+end
 
-unless node['libvirt']['network'].nil?
-  node['libvirt']['network'].each do |k, v|
+unless node['libvirt']['networks'].nil?
+  node['libvirt']['networks'].each do |k, v|
     libvirt_network k do
+      action v['action']
+    end
+  end
+end
+
+unless node['libvirt']['pools'].nil?
+  node['libvirt']['network'].each do |k, v|
+    libvirt_pool k do
       action v['action']
     end
   end
