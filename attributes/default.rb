@@ -1,4 +1,5 @@
 default['libvirt']['hooks'] = []
+default['libvirt']['group'] = 'libvirt'
 default['libvirt']['packages'] = value_for_platform(
   %w(centos redhat suse fedora) => {
     'default' => 'libvirt'
