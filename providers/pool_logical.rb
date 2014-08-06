@@ -14,4 +14,8 @@ action :create do
     command "virsh pool-define /tmp/pool-#{new_resource.name}.xml"
     not_if "virsh pool-info #{new_resource.name} "
   end
+  execute "virsh pool-start #{new_resource.name}" do
+    command "virsh pool-start #{new_resource.name}"
+    not_if "virsh pool-list | grep -q #{new_resource.name}"
+  end
 end
