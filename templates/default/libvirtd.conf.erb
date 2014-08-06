@@ -1,15 +1,15 @@
-<% node['libvirt']['libvirtd'].each do |key, value| %>
-<% next if value.nil? %>
-<%= key %>=<%=
-  case value
-  when TrueClass
-    '1'
-  when FalseClass
-    '0'
-  when Array
-    value.join(',')
-  else
-    value
-  end
+<% node['libvirt']['libvirtd'].each do |k, v| -%>
+<% unless v.nil? -%>
+<%= k -%>=
+<% case v -%>
+<% when TrueClass -%>
+    1
+<% when FalseClass -%>
+    0
+<% when Array, Hash, Mash -%>
+<%=  v.join(',') %>
+<%  else -%>
+    "<%= v -%>"
+<%  end -%>
 %>
 <% end %>
