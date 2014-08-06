@@ -75,9 +75,14 @@ unless node['libvirt']['networks'].nil?
 end
 
 unless node['libvirt']['pools'].nil?
-  node['libvirt']['network'].each do |k, v|
-    libvirt_pool k do
-      action v['action']
+  node['libvirt']['pools'].each do |pool|
+    case pool['type']
+      when 'logical'
+      libvirt_pool_logical pool['name'] do
+        %w{name source target action uuid}.each do |attr|
+          send(attr, pool[attr])  if pool[attr]
+        end
+      end
     end
   end
 end

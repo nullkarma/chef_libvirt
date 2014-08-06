@@ -1,0 +1,13 @@
+<pool type="logical">
+  <name><%= @name -%></name>
+  <source>
+  <%= @source.each do |dev| -%>
+    <device path="<%= dev -%>"/>
+  <% end -%>
+  </source>
+  <target>
+  <%= @target.each do |dev| -%>
+    <path>"<%= dev -%>"</path>
+  <% end -%>
+  </target>
+</pool>
