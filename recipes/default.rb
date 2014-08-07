@@ -1,7 +1,7 @@
 
 service node['libvirt']['libvirt_service'] do
   action [:enable, :start]
-  supports [ :start, :stop, :status, :reload ]
+  supports [ :start, :stop, :status, :reload, :restart ]
 end
 
 template '/etc/libvirt/libvirtd.conf' do
@@ -9,7 +9,7 @@ template '/etc/libvirt/libvirtd.conf' do
   owner node['libvirt']['user']
   group node['libvirt']['group']
   mode 00750
-  notifies :reload, "service[#{node['libvirt']['libvirt_service']}]", :delayed
+  notifies :restart, "service[#{node['libvirt']['libvirt_service']}]", :delayed
   variables({ :variables => node['libvirt']['libvirtd'] })
 end
 
@@ -21,7 +21,7 @@ unless node['libvirt']['libvirt-bin'].nil?
     owner 'root'
     group 'root'
     variables({ :vars => node['libvirt']['libvirt-bin'] })
-    notifies :reload, "service[#{node['libvirt']['libvirt_service']}]", :delayed
+    notifies :restart, "service[#{node['libvirt']['libvirt_service']}]", :delayed
   end
 end
 
