@@ -6,6 +6,10 @@ description 'Installs/configures libvirt'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version '0.0.1'
 
+recipe 'libvirt',       'Installs libvirt package and sets up configuration'
+recipe 'libvirt::data_bag', 'Configure libvirt from data_bags attributes'
+
+
 %w(debian ubuntu suse exherbo).each do |os|
   supports os
 end
