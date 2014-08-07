@@ -20,24 +20,24 @@ unless node['libvirt']['data_bags'].nil?
       Hash.new
     end
 
-    if bag_item['domains']
-      domains = Chef::Mixin::DeepMerge.merge(domains, bag_item['domains'])
+    if bag_item['domain']
+      domains = Chef::Mixin::DeepMerge.merge(domains, bag_item['domain'])
     end
 
-    if bag_item['nwfilters']
-      nwfilters = Chef::Mixin::DeepMerge.merge(nwfilters, bag_item['nwfilters'])
+    if bag_item['nwfilter']
+      nwfilters = Chef::Mixin::DeepMerge.merge(nwfilters, bag_item['nwfilter'])
     end
 
-    if bag_item['networks']
-      networks = Chef::Mixin::DeepMerge.merge(networks, bag_item['networks'])
+    if bag_item['network']
+      networks = Chef::Mixin::DeepMerge.merge(networks, bag_item['network'])
     end
 
-    if bag_item['pools']
-      pools = Chef::Mixin::DeepMerge.merge(pools, bag_item['pools'])
+    if bag_item['pool']
+      pools = Chef::Mixin::DeepMerge.merge(pools, bag_item['pool'])
     end
 
-    if bag_item['hooks']
-      pools = Chef::Mixin::DeepMerge.merge(hooks, bag_item['hooks'])
+    if bag_item['hook']
+      pools = Chef::Mixin::DeepMerge.merge(hooks, bag_item['hook'])
     end
 
   end

@@ -75,6 +75,18 @@ unless node['libvirt']['networks'].nil?
   end
 end
 
+
+
+unless node['libvirt']['hooks'].nil?
+  node['libvirt']['hooks'].each do |hook|
+    libvirt_hook hook['type'] do
+      %w{name source}.each do |attr|
+        send(attr, pool[attr])  if pool[attr]
+      end
+    end
+  end
+end
+
 unless node['libvirt']['pools'].nil?
   node['libvirt']['pools'].each do |pool|
     case pool['type']

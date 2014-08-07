@@ -6,7 +6,7 @@ Example hook data_bag
 ================
 ```
 {
-  "id": "reject_default_route",
+  "id": "domain",
   "type": "domain",
   "content": {
     [
