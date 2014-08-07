@@ -39,7 +39,7 @@ action :start do
   end
 end
 
-action :start do
+action :autostart do
   execute "virsh pool-autostart #{new_resource.name}" do
     command "virsh pool-autostart #{new_resource.name}"
     not_if "virsh pool-list --autostart | grep -q #{new_resource.name}"
