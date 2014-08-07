@@ -19,3 +19,29 @@ action :create do
     not_if "virsh pool-list | grep -q #{new_resource.name}"
   end
 end
+
+action :define do
+  template "/tmp/pool-#{new_resource.name}.xml" do
+    source "pool_logical.xml.erb"
+    action :create
+    variables(:name => new_resource.name, :target => new_resource.target, :source => new_resource.source, :uuid => new_resource.uuid)
+  end
+  execute "virsh pool-define /tmp/pool-#{new_resource.name}.xml" do
+    command "virsh pool-define /tmp/pool-#{new_resource.name}.xml"
+    not_if "virsh pool-info #{new_resource.name}"
+  end
+end
+
+action :start do
+  execute "virsh pool-start #{new_resource.name}" do
+    command "virsh pool-start #{new_resource.name}"
+    not_if "virsh pool-list | grep -q #{new_resource.name}"
+  end
+end
+
+action :start do
+  execute "virsh pool-autostart #{new_resource.name}" do
+    command "virsh pool-autostart #{new_resource.name}"
+    not_if "virsh pool-list --autostart | grep -q #{new_resource.name}"
+  end
+end
