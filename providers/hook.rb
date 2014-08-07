@@ -6,9 +6,9 @@ end
 
 action :create do
   file "/etc/libvirt/hooks/#{new_resource.name}" do
-    owner node['libvirt']['user']
+    owner 'root'
     group node['libvirt']['group']
-    mode 0644
+    mode 0750
     content new_resource.source.join("\n")
   end
   new_resource.updated_by_last_action(true)
