@@ -13,6 +13,15 @@ template '/etc/libvirt/libvirtd.conf' do
   variables({ :variables => node['libvirt']['libvirtd'] })
 end
 
+template '/etc/libvirt/qemu.conf' do
+  source 'qemu.conf.erb'
+  owner node['libvirt']['user']
+  group node['libvirt']['group']
+  mode 00750
+  notifies :restart, "service[#{node['libvirt']['libvirt_service']}]", :delayed
+  variables({ :variables => node['libvirt']['qemu'] })
+end
+
 unless node['libvirt']['libvirt-bin'].nil?
   template '/etc/default/libvirt-bin' do
     source 'libvirt-bin.erb'
