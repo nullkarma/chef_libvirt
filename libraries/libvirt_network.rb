@@ -37,7 +37,7 @@ class Chef
 end
 
 
-сlass Chef
+class Chef
   class Provider
     class LibvirtNetwork < Chef::Provider
       # implement load_current_resource method to load previous resource before action
