@@ -42,20 +42,29 @@ unless node['libvirt']['users'].nil?
 end
 
 unless node['libvirt']['networks'].nil?
-  node['libvirt']['networks'].each do |k, v|
-    libvirt_network k do
-      action v['action']
+  node['libvirt']['networks'].each do |net|
+    case net['type']
+    when 'bridge'
+      libvirt_net_bridge net['name'] do
+        %w{name action uuid}.each do |attr|
+          send(attr, net[attr]) if net[attr]
+        end
+      end
+    else
+      libvirt_network net['name'] do
+        %w{name action uuid}.each do |attr|
+          send(attr, net[attr]) if net[attr]
+        end
+      end
     end
   end
 end
-
-
 
 unless node['libvirt']['hooks'].nil?
   node['libvirt']['hooks'].each do |hook|
     libvirt_hook hook['name'] do
       %w{name source}.each do |attr|
-        send(attr, pool[attr])  if pool[attr]
+        send(attr, hook[attr]) if hook[attr]
       end
     end
   end
@@ -67,7 +76,7 @@ unless node['libvirt']['pools'].nil?
       when 'logical'
       libvirt_pool_logical pool['name'] do
         %w{name source target action uuid}.each do |attr|
-          send(attr, pool[attr])  if pool[attr]
+          send(attr, pool[attr]) if pool[attr]
         end
       end
     end
