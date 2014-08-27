@@ -43,7 +43,7 @@ end
 
 unless node['libvirt']['networks'].nil?
   node['libvirt']['networks'].each do |net|
-    libvirt_net_bridge net['name'] do
+    libvirt_network net['name'] do
       %w{source type name action uuid mode}.each do |attr|
         send(attr, net[attr]) if net[attr]
       end
