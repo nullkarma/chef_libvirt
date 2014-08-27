@@ -61,53 +61,53 @@ class Chef
         @current_resource
       end
 
-      def createxml
+      def action_createxml
         new_resource.updated_by_last_action(true)
       end
 
-      def define
+      def action_define
         cmd = Mixlib::ShellOut.new("virsh", "net-define", @new_resource.source)
         cmd.run_command
         cmd.error!
         new_resource.updated_by_last_action(true)
       end
 
-      def create
+      def action_create
         cmd = Mixlib::ShellOut.new("virsh", "net-create", @new_resource.source)
         cmd.run_command
         cmd.error!
         new_resource.updated_by_last_action(true)
       end
 
-      def undefine
+      def action_undefine
         cmd = Mixlib::ShellOut.new("virsh", "net-undefine", @new_resource.name)
         cmd.run_command
         cmd.error!
         new_resource.updated_by_last_action(true)
       end
 
-      def destroy
+      def action_destroy
         cmd = Mixlib::ShellOut.new("virsh", "net-destroy", @new_resource.name)
         cmd.run_command
         cmd.error!
         new_resource.updated_by_last_action(true)
       end
 
-      def autostart
+      def action_autostart
         cmd = Mixlib::ShellOut.new("virsh", "net-autostart", @new_resource.name)
         cmd.run_command
         cmd.error!
         new_resource.updated_by_last_action(true)
       end
 
-      def start
+      def action_start
         cmd = Mixlib::ShellOut.new("virsh", "net-start", @new_resource.name)
         cmd.run_command
         cmd.error!
         new_resource.updated_by_last_action(true)
       end
 
-      def noautostart
+      def action_noautostart
         cmd = Mixlib::ShellOut.new("virsh", "net-autostart", "--disable", @new_resource.name)
         cmd.run_command
         cmd.error!
