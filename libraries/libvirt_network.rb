@@ -14,18 +14,27 @@ class Chef
         @allowed_actions = [ :define, :create, :undefine, :destroy, :autostart, :start, :noautostart, :createxml ]
         @name = name
         @returns = 0
+        @uuid = nil
+        @bridge_name = nil
+        @forward_mode = nil
+        @virtualport_type = nil
+        @source = nil
       end
       
       def uuid(arg=nil)
         set_or_return(:uuid, arg, :kind_of => [String])
       end
       
-      def type(arg=nil)
-        set_or_return(:type, arg, :kind_of => [String])
+      def forward_mode(arg=nil)
+        set_or_return(:forward_mode, arg, :kind_of => [String])
       end
-      
-      def mode(arg=nil)
-        set_or_return(:mode, arg, :kind_of => [String])
+
+      def bridge_name(arg=nil)
+        set_or_return(:bridge_name, arg, :kind_of => [String])
+      end
+
+      def virtualport_type(arg=nil)
+        set_or_return(:virtualport_type, arg, :kind_of => [String])
       end
 
       def source(arg=nil)
@@ -45,8 +54,9 @@ class Chef
         @current_resource = Chef::Resource::LibvirtNetwork.new(@new_resource.name)
         @current_resource.name(@new_resource.name)
         @current_resource.uuid(@new_resource.uuid)
-        @current_resource.type(@new_resource.type)
-        @current_resource.mode(@new_resource.mode)
+        @current_resource.bridge_name(@new_resource.bridge_name)
+        @current_resource.forward_mode(@new_resource.forward_mode)
+        @current_resource.virtualport_type(@new_resource.virtualport_type)
         @current_resource.source(@new_resource.source)
         @current_resource
       end
