@@ -20,7 +20,7 @@ class Chef
         set_or_return(:uuid, arg, :kind_of => [String])
       end
       
-      def type(arg)
+      def type(arg=nil)
         set_or_return(:type, arg, :kind_of => [String])
       end
       
