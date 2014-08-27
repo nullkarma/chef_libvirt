@@ -43,18 +43,9 @@ end
 
 unless node['libvirt']['networks'].nil?
   node['libvirt']['networks'].each do |net|
-    case net['type']
-    when 'bridge'
-      libvirt_net_bridge net['name'] do
-        %w{name action uuid}.each do |attr|
-          send(attr, net[attr]) if net[attr]
-        end
-      end
-    else
-      libvirt_network net['name'] do
-        %w{name action uuid}.each do |attr|
-          send(attr, net[attr]) if net[attr]
-        end
+    libvirt_net_bridge net['name'] do
+      %w{source type name action uuid mode}.each do |attr|
+        send(attr, net[attr]) if net[attr]
       end
     end
   end
