@@ -63,19 +63,19 @@ class Chef
       end
 
       def is_exists?
-        Mixlib::ShellOut.shell_out_with_systems_locale("virsh net-info #{@new_resource.name}").exitstatus == 0
+        Mixlib::ShellOut.new("virsh net-info #{@new_resource.name}", :environment => {'LC_ALL' => nil}).run_command.exitstatus == 0
       end
       
       def is_active?
-        Mixlib::ShellOut.shell_out_with_systems_locale("virsh net-info #{@new_resource.name} | grep -qE '^Active:.*yes$'").exitstatus == 0
+        Mixlib::ShellOut.new("virsh net-info #{@new_resource.name} | grep -qE '^Active:.*yes$'", :environment => {'LC_ALL' => nil}).run_command.exitstatus == 0
       end
       
       def is_persistent?
-        Mixlib::ShellOut.shell_out_with_systems_locale("virsh net-info #{@new_resource.name} | grep -qE '^Persistent:.*yes$'").exitstatus == 0
+        Mixlib::ShellOut.new("virsh net-info #{@new_resource.name} | grep -qE '^Persistent:.*yes$'", :environment => {'LC_ALL' => nil}).run_command.exitstatus == 0
       end
 
       def is_autostart?
-        Mixlib::ShellOut.shell_out_with_systems_locale("virsh net-info #{@new_resource.name} | grep -qE '^Autostart:.*yes$'").exitstatus == 0
+        Mixlib::ShellOut.new("virsh net-info #{@new_resource.name} | grep -qE '^Autostart:.*yes$'", :environment => {'LC_ALL' => nil}).run_command.exitstatus == 0
       end
 
 
