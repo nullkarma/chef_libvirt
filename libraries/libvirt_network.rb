@@ -19,6 +19,7 @@ class Chef
         @forward_mode = nil
         @virtualport_type = nil
         @source = nil
+        @running = false
       end
       
       def uuid(arg=nil)
@@ -61,6 +62,23 @@ class Chef
         @current_resource
       end
 
+      def is_exists?
+        shell_out_with_systems_locale("virsh net-info #{@new_resource.name}").exitstatus == 0
+      end
+      
+      def is_active?
+        shell_out_with_systems_locale("virsh net-info #{@new_resource.name} | grep -qE '^Active:.*yes$'").exitstatus == 0
+      end
+      
+      def is_persistent?
+        shell_out_with_systems_locale("virsh net-info #{@new_resource.name} | grep -qE '^Persistent:.*yes$'").exitstatus == 0
+      end
+
+      def is_autostart?
+        shell_out_with_systems_locale("virsh net-info #{@new_resource.name} | grep -qE '^Autostart:.*yes$'").exitstatus == 0
+      end
+
+
       def action_createxml
         new_resource.updated_by_last_action(true)
       end
@@ -80,38 +98,48 @@ class Chef
       end
 
       def action_undefine
-        cmd = Mixlib::ShellOut.new("virsh", "net-undefine", @new_resource.name)
-        cmd.run_command
-        cmd.error!
-        new_resource.updated_by_last_action(true)
+        if is_exists?
+          cmd = Mixlib::ShellOut.new("virsh", "net-undefine", @new_resource.name)
+          cmd.run_command
+          cmd.error!
+          new_resource.updated_by_last_action(true)
+        end
       end
 
       def action_destroy
-        cmd = Mixlib::ShellOut.new("virsh", "net-destroy", @new_resource.name)
-        cmd.run_command
-        cmd.error!
-        new_resource.updated_by_last_action(true)
+        if is_active?
+          cmd = Mixlib::ShellOut.new("virsh", "net-destroy", @new_resource.name)
+          cmd.run_command
+          cmd.error!
+          new_resource.updated_by_last_action(true)
+        end
       end
 
       def action_autostart
-        cmd = Mixlib::ShellOut.new("virsh", "net-autostart", @new_resource.name)
-        cmd.run_command
-        cmd.error!
-        new_resource.updated_by_last_action(true)
+        if is_exists?
+          cmd = Mixlib::ShellOut.new("virsh", "net-autostart", @new_resource.name)
+          cmd.run_command
+          cmd.error!
+          new_resource.updated_by_last_action(true)
+        end
       end
 
       def action_start
-        cmd = Mixlib::ShellOut.new("virsh", "net-start", @new_resource.name)
-        cmd.run_command
-        cmd.error!
-        new_resource.updated_by_last_action(true)
+        if is_exists?
+          cmd = Mixlib::ShellOut.new("virsh", "net-start", @new_resource.name)
+          cmd.run_command
+          cmd.error!
+          new_resource.updated_by_last_action(true)
+        end
       end
 
       def action_noautostart
-        cmd = Mixlib::ShellOut.new("virsh", "net-autostart", "--disable", @new_resource.name)
-        cmd.run_command
-        cmd.error!
-        new_resource.updated_by_last_action(true)
+        if is_autostart?
+          cmd = Mixlib::ShellOut.new("virsh", "net-autostart", "--disable", @new_resource.name)
+          cmd.run_command
+          cmd.error!
+          new_resource.updated_by_last_action(true)
+        end
       end
 
     end
