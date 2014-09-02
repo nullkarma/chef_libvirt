@@ -63,19 +63,19 @@ class Chef
       end
 
       def is_exists?
-        shell_out_with_systems_locale("virsh net-info #{@new_resource.name}").exitstatus == 0
+        Mixlib::ShellOut.shell_out_with_systems_locale("virsh net-info #{@new_resource.name}").exitstatus == 0
       end
       
       def is_active?
-        shell_out_with_systems_locale("virsh net-info #{@new_resource.name} | grep -qE '^Active:.*yes$'").exitstatus == 0
+        Mixlib::ShellOut.shell_out_with_systems_locale("virsh net-info #{@new_resource.name} | grep -qE '^Active:.*yes$'").exitstatus == 0
       end
       
       def is_persistent?
-        shell_out_with_systems_locale("virsh net-info #{@new_resource.name} | grep -qE '^Persistent:.*yes$'").exitstatus == 0
+        Mixlib::ShellOut.shell_out_with_systems_locale("virsh net-info #{@new_resource.name} | grep -qE '^Persistent:.*yes$'").exitstatus == 0
       end
 
       def is_autostart?
-        shell_out_with_systems_locale("virsh net-info #{@new_resource.name} | grep -qE '^Autostart:.*yes$'").exitstatus == 0
+        Mixlib::ShellOut.shell_out_with_systems_locale("virsh net-info #{@new_resource.name} | grep -qE '^Autostart:.*yes$'").exitstatus == 0
       end
 
 
