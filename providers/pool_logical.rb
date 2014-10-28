@@ -14,9 +14,14 @@ action :create do
     command "virsh pool-define /tmp/pool-#{new_resource.name}.xml"
     not_if "virsh pool-info #{new_resource.name} "
   end
-  execute "virsh pool-start #{new_resource.name}" do
-    command "virsh pool-start #{new_resource.name}"
-    not_if "virsh pool-list | grep -q #{new_resource.name}"
+  begin
+    execute "virsh pool-start #{new_resource.name}" do
+      command "virsh pool-start #{new_resource.name}"
+      not_if "virsh pool-list | grep -q #{new_resource.name}"
+      action :nothing
+    end.run_action(:run)
+  rescue => ex
+    Chef::Log.warn("libvirt pool-start error: #{ex}")
   end
 end
 
@@ -37,7 +42,8 @@ action :start do
     execute "virsh pool-start #{new_resource.name}" do
       command "virsh pool-start #{new_resource.name}"
       not_if "virsh pool-list | grep -q #{new_resource.name}"
-    end
+      action :nothing
+    end.run_action(:run)
   rescue => ex
     Chef::Log.warn("libvirt pool-start error: #{ex}")
   end
