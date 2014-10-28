@@ -1,74 +1,125 @@
 
 service node['libvirt']['libvirt_service'] do
   action [:enable, :start]
-  supports [ :start, :stop, :status, :reload, :restart ]
+  supports [:start, :stop, :status, :reload, :restart]
 end
 
-template '/etc/libvirt/libvirtd.conf' do
-  source 'libvirtd.conf.erb'
-  owner node['libvirt']['user']
-  group node['libvirt']['group']
-  mode 00750
-  notifies :restart, "service[#{node['libvirt']['libvirt_service']}]", :delayed
-  variables({ :variables => node['libvirt']['libvirtd'] })
+%w(libvirt libvirtd lxc qemu qemu-lockd virtlockd virt-login-shell).each do |name|
+  template "/etc/libvirt/#{name}.conf" do
+    source "#{name}.conf.erb"
+    owner node['libvirt']['user']
+    group node['libvirt']['group']
+    mode 00750
+    notifies :restart, "service[#{node['libvirt']['libvirt_service']}]", :delayed
+    variables(variables: node['libvirt'][name])
+    not_if { node['libvirt'][name].nil? || node['libvirt'][name].empty? }
+  end
 end
 
-template '/etc/libvirt/qemu.conf' do
-  source 'qemu.conf.erb'
-  owner node['libvirt']['user']
-  group node['libvirt']['group']
-  mode 00750
-  notifies :restart, "service[#{node['libvirt']['libvirt_service']}]", :delayed
-  variables({ :variables => node['libvirt']['qemu'] })
-end
+unless node['libvirt']['libvirt-bin'].nil? && node['libvirt']['libvirt-bin'].empty?
+  filename = ''
+  filesource = ''
+  case node['platform']
+  when 'debian', 'ubuntu'
+    filename = '/etc/default/libvirt-bin'
+    filesource = 'libvirt-bin.debian.erb'
+  when 'exherbo'
+    filename = '/etc/conf.d/libvirt'
+    filesource = 'libvirt-bin.exherbo.erb'
+  end
 
-unless node['libvirt']['libvirt-bin'].nil?
-  template '/etc/default/libvirt-bin' do
-    source 'libvirt-bin.erb'
+  template filename do
+    source filesource
     action :create
     mode 00644
     owner 'root'
     group 'root'
-    variables({ :vars => node['libvirt']['libvirt-bin'] })
+    variables(vars: node['libvirt']['libvirt-bin'])
     notifies :restart, "service[#{node['libvirt']['libvirt_service']}]", :delayed
+    not_if { filename.empty? || filesource.empty? }
   end
 end
 
-unless node['libvirt']['users'].nil?
-  group node['libvirt']['group'] do
-    members node['libvirt']['users']
-    action :manage
+group node['libvirt']['group'] do
+  members node['libvirt']['users']
+  action :manage
+  not_if { node['libvirt']['users'].nil? }
+end
+
+domains = Mash.new
+nwfilters = Mash.new
+networks = Mash.new
+pools = Mash.new
+hooks = Mash.new
+
+unless node['libvirt']['data_bags'].nil? && node['libvirt']['data_bag'].nil?
+  node['libvirt']['data_bags'].each do |item|
+    bag_item  = begin
+      if node['libvirt']['data_bag_secret']
+        secret = Chef::EncryptedDataBagItem.load_secret(node['libvirt']['data_bag_secret'])
+        Chef::EncryptedDataBagItem.load(node['libvirt']['data_bag'], item, secret)
+      else
+        data_bag_item(node['libvirt']['data_bag'], item)
+      end
+    rescue => ex
+      Chef::Log.info("Data bag #{bag} not found (#{ex}), so skipping")
+      {}
+    end
+
+    if bag_item['domain']
+      domains = Chef::Mixin::DeepMerge.merge(domains, bag_item['domain'])
+    end
+
+    if bag_item['nwfilter']
+      nwfilters = Chef::Mixin::DeepMerge.merge(nwfilters, bag_item['nwfilter'])
+    end
+
+    if bag_item['network']
+      networks = Chef::Mixin::DeepMerge.merge(networks, bag_item['network'])
+    end
+
+    if bag_item['pool']
+      pools = Chef::Mixin::DeepMerge.merge(pools, bag_item['pool'])
+    end
+
+    if bag_item['hook']
+      hooks = Chef::Mixin::DeepMerge.merge(hooks, bag_item['hook'])
+    end
   end
+
+  node.set['libvirt']['domains'] = domains
+  node.set['libvirt']['nwfilters'] = nwfilters
+  node.set['libvirt']['networks'] = networks
+  node.set['libvirt']['pools'] = pools
+  node.set['libvirt']['hooks'] = hooks
+  include_recipe 'libvirt'
 end
 
 unless node['libvirt']['networks'].nil?
   node['libvirt']['networks'].each do |net|
     libvirt_network net['name'] do
-      %w{source type name action uuid mode}.each do |attr|
+      %w(source type name action uuid mode).each do |attr|
         send(attr, net[attr]) if net[attr]
       end
     end
   end
 end
 
-unless node['libvirt']['hooks'].nil?
-  node['libvirt']['hooks'].each do |hook|
-    libvirt_hook hook['name'] do
-      %w{name source}.each do |attr|
-        send(attr, hook[attr]) if hook[attr]
-      end
-    end
-  end
-end
+# unless node['libvirt']['hooks'].nil?
+#  node['libvirt']['hooks'].each do |hook|
+#    libvirt_hook hook['name'] do
+#      %w{name source}.each do |attr|
+#        send(attr, hook[attr]) if hook[attr]
+#      end
+#    end
+#  end
+# end
 
 unless node['libvirt']['pools'].nil?
   node['libvirt']['pools'].each do |pool|
-    case pool['type']
-      when 'logical'
-      libvirt_pool_logical pool['name'] do
-        %w{name source target action uuid}.each do |attr|
-          send(attr, pool[attr]) if pool[attr]
-        end
+    libvirt_pool pool['name'] do
+      %w(name source target action uuid type).each do |attr|
+        send(attr, pool[attr]) if pool[attr]
       end
     end
   end

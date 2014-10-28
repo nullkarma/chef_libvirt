@@ -1,0 +1,11 @@
+image: library/golang:1.4
+script:
+  - apt-get update && apt-get install curl -y
+  - curl -L https://www.opscode.com/chef/install.sh | bash -s -- -P chefdk
+  - rake
+notify:
+  email:
+    recipients:
+      - dev@selfip.ru
+    on_success: change
+    on_failure: change

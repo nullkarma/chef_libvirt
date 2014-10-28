@@ -1,3 +1,3 @@
-<% node['libvirt']['qemu'].each do |k, v| -%>
+<% @variables.each do |k, v| -%>
 <% unless v.nil? -%><%= k -%> =<% case v -%><% when TrueClass -%> 1<% when FalseClass -%> 0<% when Array, Hash, Mash -%>["<%= v.join('", "') %>"]<% else -%> "<%= v -%>"<%  end -%><% end %>
 <% end %>

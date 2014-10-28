@@ -1,0 +1,7 @@
+<pool type="sheepdog">
+  <name><%= @name -%></name>
+  <source>
+    <name><%= @name -%></name>
+    <host name='<%= @source['host']['name'] -%>' port='<%= @source['host']['port'] -%>'/>
+  </source>
+</pool>
