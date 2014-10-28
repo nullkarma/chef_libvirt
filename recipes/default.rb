@@ -65,10 +65,14 @@ unless node['libvirt']['pools'].nil?
   node['libvirt']['pools'].each do |pool|
     case pool['type']
       when 'logical'
-      libvirt_pool_logical pool['name'] do
-        %w{name source target action uuid}.each do |attr|
-          send(attr, pool[attr]) if pool[attr]
+      begin
+        libvirt_pool_logical pool['name'] do
+          %w{name source target action uuid}.each do |attr|
+            send(attr, pool[attr]) if pool[attr]
+          end
         end
+      rescue => ex
+        Chef::Log.warn("libvirt pool error: #{ex}")
       end
     end
   end
