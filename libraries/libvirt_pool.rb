@@ -60,20 +60,20 @@ class Chef
         @current_resource
       end
 
-      def exist?
-        Mixlib::ShellOut.new("virsh pool-info #{@new_resource.name}", environment: { 'LC_ALL' => nil }).run_command.exitstatus == 0
+      def exist?(name)
+        Mixlib::ShellOut.new("virsh pool-info #{name}", environment: { 'LC_ALL' => nil }).run_command.exitstatus == 0
       end
 
-      def active?
-        Mixlib::ShellOut.new("virsh pool-info #{@new_resource.name} | grep -qE '^Active:.*yes$'", environment: { 'LC_ALL' => nil }).run_command.exitstatus == 0
+      def active?(name)
+        Mixlib::ShellOut.new("virsh pool-info #{name} | grep -qE '^Active:.*yes$'", environment: { 'LC_ALL' => nil }).run_command.exitstatus == 0
       end
 
-      def persistent?
-        Mixlib::ShellOut.new("virsh pool-info #{@new_resource.name} | grep -qE '^Persistent:.*yes$'", environment: { 'LC_ALL' => nil }).run_command.exitstatus == 0
+      def persistent?(name)
+        Mixlib::ShellOut.new("virsh pool-info #{name} | grep -qE '^Persistent:.*yes$'", environment: { 'LC_ALL' => nil }).run_command.exitstatus == 0
       end
 
-      def autostart?
-        Mixlib::ShellOut.new("virsh pool-info #{@new_resource.name} | grep -qE '^Autostart:.*yes$'", environment: { 'LC_ALL' => nil }).run_command.exitstatus == 0
+      def autostart?(name)
+        Mixlib::ShellOut.new("virsh pool-info #{name} | grep -qE '^Autostart:.*yes$'", environment: { 'LC_ALL' => nil }).run_command.exitstatus == 0
       end
 
       def create_xml
@@ -96,7 +96,7 @@ class Chef
         create_xml if new_resource.source.nil? || new_resource.empty?
         execute "virsh pool-create /tmp/pool-#{new_resource.name}.xml" do
           command "virsh pool-create /tmp/pool-#{new_resource.name}.xml"
-          not_if { new_resource.exist? }
+          not_if { exist?(new_resource.name) }
           returns new_resource.returns
           action :nothing
         end.run_action(:run)
@@ -107,7 +107,7 @@ class Chef
         create_xml if new_resource.source.nil? || new_resource.empty?
         execute "virsh pool-define /tmp/pool-#{new_resource.name}.xml" do
           command "virsh pool-define /tmp/pool-#{new_resource.name}.xml"
-          not_if { new_resource.exist? }
+          not_if { exist?(new_resource.name) }
           returns new_resource.returns
           action :nothing
         end.run_action(:run)
@@ -117,7 +117,7 @@ class Chef
       def action_start
         execute "virsh pool-start #{new_resource.name}" do
           command "virsh pool-start #{new_resource.name}"
-          not_if { new_resource.active? }
+          not_if { active?(new_resource.name) }
           returns new_resource.returns
           action :nothing
         end.run_action(:run)
@@ -126,7 +126,7 @@ class Chef
       def action_autostart
         execute "virsh pool-autostart #{new_resource.name}" do
           command "virsh pool-autostart #{new_resource.name}"
-          not_if { new_resource.autostart? }
+          not_if { autostart?(new_resource.name) }
           returns new_resource.returns
           action :nothing
         end.run_action(:run)
