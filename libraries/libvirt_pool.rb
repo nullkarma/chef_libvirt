@@ -76,7 +76,7 @@ class Chef
         Mixlib::ShellOut.new("virsh pool-info #{@new_resource.name} | grep -qE '^Autostart:.*yes$'", environment: { 'LC_ALL' => nil }).run_command.exitstatus == 0
       end
 
-      def create_xml(*_path)
+      def create_xml
         template "/tmp/pool-#{new_resource.name}.xml" do
           source "pool_#{new_resource.type}.xml.erb"
           action :nothing
@@ -84,7 +84,7 @@ class Chef
         end.run_action(:create)
       end
 
-      def remove_xml(*_path)
+      def remove_xml
         file "/tmp/pool-#{new_resource.name}.xml" do
           backup 0
           action :nothing
