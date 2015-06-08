@@ -98,7 +98,7 @@ end
 unless node['libvirt']['networks'].nil?
   node['libvirt']['networks'].each do |net|
     libvirt_network net['name'] do
-      %w(source type name action uuid mode).each do |attr|
+      %w(name uuid type options action returns).each do |attr|
         send(attr, net[attr]) if net[attr]
       end
     end
@@ -118,7 +118,7 @@ end
 unless node['libvirt']['pools'].nil?
   node['libvirt']['pools'].each do |pool|
     libvirt_pool pool['name'] do
-      %w(name source target action uuid type).each do |attr|
+      %w(name uuid type options action returns).each do |attr|
         send(attr, pool[attr]) if pool[attr]
       end
     end
