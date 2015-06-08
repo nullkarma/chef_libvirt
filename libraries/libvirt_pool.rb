@@ -39,7 +39,7 @@ class Chef
       end
 
       def returns(arg = nil)
-        set_or_return(:returns, arg, kind_of: [String, Int, Array])
+        set_or_return(:returns, arg, kind_of: [Array])
       end
     end
   end

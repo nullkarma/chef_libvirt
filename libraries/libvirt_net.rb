@@ -15,7 +15,7 @@ class Chef
         @action = :create
         @allowed_actions = [:define, :create, :undefine, :destroy, :autostart, :start, :noautostart]
         @name = name
-        @returns = 0
+        @returns = [0]
         @uuid = nil
         @type = nil
         @source = nil
@@ -37,6 +37,11 @@ class Chef
       def options(arg = nil)
         set_or_return(:options, arg, kind_of: [Hash, Mash])
       end
+
+      def returns(arg = nil)
+        set_or_return(:returns, arg, kind_of: [Array])
+      end
+
     end
   end
 end
