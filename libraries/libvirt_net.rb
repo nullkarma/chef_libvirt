@@ -54,26 +54,27 @@ class Chef
       def load_current_resource
         @current_resource = Chef::Resource::LibvirtNet.new(@new_resource.name)
         @current_resource.name(@new_resource.name)
+        @current_resource.type(@new_resource.type)
         @current_resource.uuid(@new_resource.uuid)
         @current_resource.options(@new_resource.options)
         @current_resource.source(@new_resource.source)
         @current_resource
       end
 
-      def exist?
-        Mixlib::ShellOut.new("virsh net-info #{@new_resource.name}", environment: { 'LC_ALL' => nil }).run_command.exitstatus == 0
+      def exist?(name)
+        Mixlib::ShellOut.new("virsh net-info #{name}", environment: { 'LC_ALL' => nil }).run_command.exitstatus == 0
       end
 
-      def active?
-        Mixlib::ShellOut.new("virsh net-info #{@new_resource.name} | grep -qE '^Active:.*yes$'", environment: { 'LC_ALL' => nil }).run_command.exitstatus == 0
+      def active?(name)
+        Mixlib::ShellOut.new("virsh net-info #{name} | grep -qE '^Active:.*yes$'", environment: { 'LC_ALL' => nil }).run_command.exitstatus == 0
       end
 
-      def persistent?
-        Mixlib::ShellOut.new("virsh net-info #{@new_resource.name} | grep -qE '^Persistent:.*yes$'", environment: { 'LC_ALL' => nil }).run_command.exitstatus == 0
+      def persistent?(name)
+        Mixlib::ShellOut.new("virsh net-info #{name} | grep -qE '^Persistent:.*yes$'", environment: { 'LC_ALL' => nil }).run_command.exitstatus == 0
       end
 
-      def autostart?
-        Mixlib::ShellOut.new("virsh net-info #{@new_resource.name} | grep -qE '^Autostart:.*yes$'", environment: { 'LC_ALL' => nil }).run_command.exitstatus == 0
+      def autostart?(name)
+        Mixlib::ShellOut.new("virsh net-info #{name} | grep -qE '^Autostart:.*yes$'", environment: { 'LC_ALL' => nil }).run_command.exitstatus == 0
       end
 
       def create_xml
@@ -97,7 +98,7 @@ class Chef
       def action_undefine
         execute "virsh net-undefine #{new_resource.name}" do
           command "virsh net-undefine #{new_resource.name}"
-          only_if { new_resource.exist? }
+          only_if { exist?(new_resource.name)  }
         end
         new_resource.updated_by_last_action(true)
       end
@@ -105,7 +106,7 @@ class Chef
       def action_destroy
         execute "virsh net-destroy #{new_resource.name}" do
           command "virsh net-destroy #{new_resource.name}"
-          only_if { new_resource.active? }
+          only_if { active?(new_resource.name) }
         end
         new_resource.updated_by_last_action(true)
       end
@@ -113,7 +114,7 @@ class Chef
       def action_autostart
         execute "virsh net-autostart #{new_resource.name}" do
           command "virsh net-autostart #{new_resource.name}"
-          only_if { new_resource.exist? }
+          only_if { exist?(new_resource.name) }
         end
         new_resource.updated_by_last_action(true)
       end
@@ -121,7 +122,7 @@ class Chef
       def action_start
         execute "virsh net-start #{new_resource.name}" do
           command "virsh net-start #{new_resource.name}"
-          only_if { new_resource.exist? }
+          only_if { exist?(new_resource.name) }
         end
         new_resource.updated_by_last_action(true)
       end
@@ -129,7 +130,7 @@ class Chef
       def action_noautostart
         execute "virsh net-autostart --disable #{new_resource.name}" do
           command "virsh net-autostart --disable #{new_resource.name}"
-          only_if { new_resource.autostart? }
+          only_if { autostart?(new_resource.name) }
         end
         new_resource.updated_by_last_action(true)
       end

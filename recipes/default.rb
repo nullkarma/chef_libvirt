@@ -93,10 +93,10 @@ unless node['libvirt']['data_bags'].nil? && node['libvirt']['data_bag'].nil?
 end
 
 unless node['libvirt']['networks'].nil?
-  node['libvirt']['networks'].each do |net|
-    libvirt_network net['name'] do
-      %w(name uuid type options action returns).each do |attr|
-        send(attr, net[attr]) if net[attr]
+  node['libvirt']['networks'].each do |name, values|
+    libvirt_net name do
+      %w(type options action returns).each do |attr|
+        send(attr, values[attr]) if values[attr]
       end
     end
   end
