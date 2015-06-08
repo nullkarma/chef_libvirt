@@ -18,25 +18,22 @@ end
 
 unless node['libvirt']['libvirt-bin'].nil? && node['libvirt']['libvirt-bin'].empty?
   filename = ''
-  filesource = ''
   case node['platform']
   when 'debian', 'ubuntu'
     filename = '/etc/default/libvirt-bin'
-    filesource = 'libvirt-bin.debian.erb'
   when 'exherbo'
     filename = '/etc/conf.d/libvirt'
-    filesource = 'libvirt-bin.exherbo.erb'
   end
 
   template filename do
-    source filesource
+    source 'libvirt-bin.erb'
     action :create
     mode 00644
     owner 'root'
     group 'root'
     variables(vars: node['libvirt']['libvirt-bin'])
     notifies :restart, "service[#{node['libvirt']['libvirt_service']}]", :delayed
-    not_if { filename.empty? || filesource.empty? }
+    not_if { filename.empty? }
   end
 end
 
