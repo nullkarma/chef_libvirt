@@ -88,7 +88,7 @@ class Chef
         file "/tmp/pool-#{new_resource.name}.xml" do
           backup 0
           action :nothing
-          only_if { File.exist?("/tmp/pool-#{new_resource.name}.xml") }
+          only_if { ::File.exist?("/tmp/pool-#{new_resource.name}.xml") }
         end.run_action(:delete)
       end
 
