@@ -8,6 +8,10 @@ version '0.0.1'
 
 recipe 'libvirt',       'Installs libvirt package and sets up configuration'
 
+%w(sheepdog).each do |dep|
+  depends dep
+end
+
 %w(debian ubuntu suse exherbo).each do |os|
   supports os
 end
