@@ -116,10 +116,10 @@ end
 # end
 
 unless node['libvirt']['pools'].nil?
-  node['libvirt']['pools'].each do |pool|
-    libvirt_pool pool['name'] do
-      %w(name uuid type options action returns).each do |attr|
-        send(attr, pool[attr]) if pool[attr]
+  node['libvirt']['pools'].each do |name, values|
+    libvirt_pool name do
+      %w(type options action returns).each do |attr|
+        send(attr, values[attr]) if values[attr]
       end
     end
   end
