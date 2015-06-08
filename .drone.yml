@@ -1,4 +1,6 @@
 image: library/golang:1.4
+env:
+  - PATH=/opt/chefdk/embedded/bin:$PATH
 script:
   - apt-get update && apt-get install curl -y
   - curl -L https://www.opscode.com/chef/install.sh | bash -s -- -P chefdk
