@@ -65,7 +65,7 @@ class Chef
       end
 
       def active?(name)
-        Mixlib::ShellOut.new("virsh pool-info #{name} | grep -qE '^Active:.*yes$'", environment: { 'LC_ALL' => nil }).run_command.exitstatus == 0
+        Mixlib::ShellOut.new("virsh pool-info #{name} | grep -qE '^State:.*running$'", environment: { 'LC_ALL' => nil }).run_command.exitstatus == 0
       end
 
       def persistent?(name)
