@@ -82,7 +82,7 @@ class Chef
       end
 
       def action_define
-        eecute "virsh net-define #{new_resource.source}" do
+        execute "virsh net-define #{new_resource.source}" do
           command "virsh net-define #{new_resource.source}"
         end
         new_resource.updated_by_last_action(true)
