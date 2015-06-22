@@ -1,3 +1,6 @@
+include_recipe 'mdadm'
+include_recipe 'lvm'
+include_recipe 'filesystem'
 
 service node['libvirt']['libvirt_service'] do
   action [:enable, :start]
