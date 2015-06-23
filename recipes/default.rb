@@ -117,6 +117,12 @@ end
 
 unless node['libvirt']['pools'].nil?
   node['libvirt']['pools'].each do |name, values|
+    case values['type']
+    when 'sheepdog'
+      include_recipe 'sheepdog'
+    when 'logical'
+      include_recipe 'lvm'
+    end
     libvirt_pool name do
       %w(type options action returns).each do |attr|
         send(attr, values[attr]) if values[attr]
