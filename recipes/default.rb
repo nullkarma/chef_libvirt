@@ -1,6 +1,6 @@
-include_recipe 'mdadm'
-include_recipe 'lvm'
-include_recipe 'filesystem'
+#include_recipe 'mdadm'
+#include_recipe 'lvm'
+#include_recipe 'filesystem'
 
 service node['libvirt']['libvirt_service'] do
   action [:enable, :start]
@@ -92,7 +92,7 @@ unless node['libvirt']['data_bags'].nil? && node['libvirt']['data_bag'].nil?
   node.set['libvirt']['networks'] = networks
   node.set['libvirt']['pools'] = pools
   node.set['libvirt']['hooks'] = hooks
-  include_recipe 'libvirt'
+  #include_recipe 'libvirt'
 end
 
 unless node['libvirt']['networks'].nil?
@@ -115,18 +115,18 @@ end
 #  end
 # end
 
-unless node['libvirt']['pools'].nil?
-  node['libvirt']['pools'].each do |name, values|
-    case values['type']
-    when 'sheepdog'
-      include_recipe 'sheepdog'
-    when 'logical'
-      include_recipe 'lvm'
-    end
-    libvirt_pool name do
-      %w(type options action returns).each do |attr|
-        send(attr, values[attr]) if values[attr]
-      end
-    end
-  end
-end
+#unless node['libvirt']['pools'].nil?
+#  node['libvirt']['pools'].each do |name, values|
+#    case values['type']
+#    when 'sheepdog'
+#      include_recipe 'sheepdog'
+#    when 'logical'
+#      include_recipe 'lvm'
+#    end
+#    libvirt_pool name do
+#      %w(type options action returns).each do |attr|
+#        send(attr, values[attr]) if values[attr]
+#      end
+#    end
+#  end
+#end
