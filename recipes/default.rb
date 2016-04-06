@@ -19,7 +19,7 @@ end
   end
 end
 
-unless node['libvirt']['libvirt-bin'].nil? && node['libvirt']['libvirt-bin'].empty?
+unless node['libvirt']['libvirt-bin'].nil?
   filename = ''
   case node['platform']
   when 'debian', 'ubuntu'
@@ -52,7 +52,7 @@ networks = Mash.new
 pools = Mash.new
 hooks = Mash.new
 
-unless node['libvirt']['data_bags'].nil? && node['libvirt']['data_bag'].nil?
+unless node['libvirt']['data_bags'].nil?
   node['libvirt']['data_bags'].each do |item|
     bag_item  = begin
       if node['libvirt']['data_bag_secret']
