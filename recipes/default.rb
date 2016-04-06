@@ -2,7 +2,7 @@
 #include_recipe 'lvm'
 #include_recipe 'filesystem'
 
-service node['libvirt']['libvirt_service'] do
+service node['libvirt']['service'] do
   action [:enable, :start]
   supports [:start, :stop, :status, :reload, :restart]
 end
@@ -13,7 +13,7 @@ end
     owner node['libvirt']['user']
     group node['libvirt']['group']
     mode 00750
-    notifies :restart, "service[#{node['libvirt']['libvirt_service']}]", :delayed
+    notifies :restart, "service[#{node['libvirt']['service']}]", :delayed
     variables(variables: node['libvirt'][name])
     not_if { node['libvirt'][name].nil? || node['libvirt'][name].empty? }
   end
@@ -35,7 +35,7 @@ unless node['libvirt']['libvirt-bin'].nil? && node['libvirt']['libvirt-bin'].emp
     owner 'root'
     group 'root'
     variables(vars: node['libvirt']['libvirt-bin'])
-    notifies :restart, "service[#{node['libvirt']['libvirt_service']}]", :delayed
+    notifies :restart, "service[#{node['libvirt']['service']}]", :delayed
     not_if { filename.empty? }
   end
 end
