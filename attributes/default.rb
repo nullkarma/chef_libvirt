@@ -12,7 +12,7 @@ default['libvirt']['packages'] = value_for_platform(
   }
 )
 default['libvirt']['service'] = value_for_platform(
-  %w(centos redhat suse fedora) => {
+  %w(centos redhat suse fedora rhel) => {
     'default' => 'libvirtd'
   },
   %w(exherbo archlinux) => {
