@@ -19,7 +19,7 @@ default['libvirt']['service'] = value_for_platform(
     'default' => 'libvirtd'
   },
   %w(ubuntu debian) => {
-    'default' => ['libvirt-bin']
+    'default' => 'libvirt-bin'
   }
 )
 
