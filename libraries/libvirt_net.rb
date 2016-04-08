@@ -3,7 +3,6 @@ include Chef::Mixin::ShellOut
 
 require 'shellwords'
 require 'mixlib/shellout'
-include Chef::SSH::Helpers
 
 use_inline_resources
 
