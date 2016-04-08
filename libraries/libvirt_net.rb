@@ -1,6 +1,16 @@
 # -*- coding: utf-8 -*-
 include Chef::Mixin::ShellOut
 
+require 'shellwords'
+require 'mixlib/shellout'
+include Chef::SSH::Helpers
+
+use_inline_resources
+
+def whyrun_supported?
+  true
+end
+
 class Chef
   class Resource
     # libvirt network resource
