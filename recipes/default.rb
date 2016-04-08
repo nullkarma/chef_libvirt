@@ -28,6 +28,8 @@ unless node['libvirt']['libvirt-bin'].nil?
     filename = '/etc/default/libvirt-bin'
   when 'exherbo'
     filename = '/etc/conf.d/libvirt'
+  when 'centos'
+    filename = '/etc/sysconfig/libvirtd'
   end
 
   template filename do
