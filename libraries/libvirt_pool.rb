@@ -63,6 +63,7 @@ class Chef
         @current_resource.uuid(@new_resource.uuid)
         @current_resource.source(@new_resource.source)
         @current_resource.options(@new_resource.options)
+        @current_resource.type(@new_resource.type)
         @current_resource.returns(@new_resource.returns)
         @current_resource
       end
@@ -105,8 +106,7 @@ class Chef
         when 'dir'
           directory new_resource.options['path'] do
             mode 0755
-            action :create
-          end
+          end.run_action(:create)
         end
         execute "virsh pool-create /tmp/pool-#{new_resource.name}.xml" do
           command "virsh pool-create /tmp/pool-#{new_resource.name}.xml"
