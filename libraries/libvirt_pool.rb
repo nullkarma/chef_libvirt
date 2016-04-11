@@ -49,6 +49,13 @@ class Chef
   class Provider
     # libvirt pool provider
     class LibvirtPool < Chef::Provider
+
+      use_inline_resources
+
+      def whyrun_supported?
+        true
+      end
+
       # implement load_current_resource method to load previous resource before action
       def load_current_resource
         @current_resource = Chef::Resource::LibvirtPool.new(@new_resource.name)
