@@ -101,6 +101,13 @@ class Chef
 
       def action_create
         create_xml if new_resource.source.nil? || new_resource.empty?
+        case new_resource.type
+        when 'dir'
+          directory new_resource.options['path'] do
+            mode 0755
+            action :create
+          end
+        end
         execute "virsh pool-create /tmp/pool-#{new_resource.name}.xml" do
           command "virsh pool-create /tmp/pool-#{new_resource.name}.xml"
           not_if { exist?(new_resource.name) }
