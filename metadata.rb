@@ -8,9 +8,9 @@ version '0.0.1'
 
 recipe 'libvirt',       'Installs libvirt package and sets up configuration'
 
-#%w(sheepdog lvm openvswitch systemd mdadm filesystem).each do |dep|
-#  depends dep
-#end
+%w(sheepdog openvswitch systemd blockdev filesystem).each do |dep|
+  depends dep
+end
 
 %w(debian ubuntu suse exherbo centos fedora).each do |os|
   supports os
