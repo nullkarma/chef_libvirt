@@ -1,8 +1,10 @@
-include_recipe 'mdadm'
-include_recipe 'lvm'
-include_recipe 'filesystem'
+#include_recipe 'mdadm'
+#include_recipe 'lvm'
+#include_recipe 'filesystem'
 
-service node['libvirt']['libvirt_service'] do
+
+
+service node['libvirt']['service'] do
   action [:enable, :start]
   supports [:start, :stop, :status, :reload, :restart]
 end
@@ -13,19 +15,21 @@ end
     owner node['libvirt']['user']
     group node['libvirt']['group']
     mode 00750
-    notifies :restart, "service[#{node['libvirt']['libvirt_service']}]", :delayed
+    notifies :restart, "service[#{node['libvirt']['service']}]", :delayed
     variables(variables: node['libvirt'][name])
     not_if { node['libvirt'][name].nil? || node['libvirt'][name].empty? }
   end
 end
 
-unless node['libvirt']['libvirt-bin'].nil? && node['libvirt']['libvirt-bin'].empty?
+unless node['libvirt']['libvirt-bin'].nil?
   filename = ''
   case node['platform']
   when 'debian', 'ubuntu'
     filename = '/etc/default/libvirt-bin'
   when 'exherbo'
     filename = '/etc/conf.d/libvirt'
+  when 'centos'
+    filename = '/etc/sysconfig/libvirtd'
   end
 
   template filename do
@@ -35,7 +39,7 @@ unless node['libvirt']['libvirt-bin'].nil? && node['libvirt']['libvirt-bin'].emp
     owner 'root'
     group 'root'
     variables(vars: node['libvirt']['libvirt-bin'])
-    notifies :restart, "service[#{node['libvirt']['libvirt_service']}]", :delayed
+    notifies :restart, "service[#{node['libvirt']['service']}]", :delayed
     not_if { filename.empty? }
   end
 end
@@ -52,7 +56,7 @@ networks = Mash.new
 pools = Mash.new
 hooks = Mash.new
 
-unless node['libvirt']['data_bags'].nil? && node['libvirt']['data_bag'].nil?
+unless node['libvirt']['data_bags'].nil?
   node['libvirt']['data_bags'].each do |item|
     bag_item  = begin
       if node['libvirt']['data_bag_secret']
@@ -92,13 +96,13 @@ unless node['libvirt']['data_bags'].nil? && node['libvirt']['data_bag'].nil?
   node.set['libvirt']['networks'] = networks
   node.set['libvirt']['pools'] = pools
   node.set['libvirt']['hooks'] = hooks
-  include_recipe 'libvirt'
+  #include_recipe 'libvirt'
 end
 
 unless node['libvirt']['networks'].nil?
   node['libvirt']['networks'].each do |name, values|
     libvirt_net name do
-      %w(type options action returns).each do |attr|
+      %w(type options action source uuid returns).each do |attr|
         send(attr, values[attr]) if values[attr]
       end
     end
@@ -117,14 +121,8 @@ end
 
 unless node['libvirt']['pools'].nil?
   node['libvirt']['pools'].each do |name, values|
-    case values['type']
-    when 'sheepdog'
-      include_recipe 'sheepdog'
-    when 'logical'
-      include_recipe 'lvm'
-    end
     libvirt_pool name do
-      %w(type options action returns).each do |attr|
+      %w(type options action source uuid returns).each do |attr|
         send(attr, values[attr]) if values[attr]
       end
     end

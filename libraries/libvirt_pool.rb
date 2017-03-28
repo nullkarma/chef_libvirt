@@ -49,6 +49,13 @@ class Chef
   class Provider
     # libvirt pool provider
     class LibvirtPool < Chef::Provider
+
+      use_inline_resources
+
+      def whyrun_supported?
+        true
+      end
+
       # implement load_current_resource method to load previous resource before action
       def load_current_resource
         @current_resource = Chef::Resource::LibvirtPool.new(@new_resource.name)
@@ -56,6 +63,7 @@ class Chef
         @current_resource.uuid(@new_resource.uuid)
         @current_resource.source(@new_resource.source)
         @current_resource.options(@new_resource.options)
+        @current_resource.type(@new_resource.type)
         @current_resource.returns(@new_resource.returns)
         @current_resource
       end
@@ -94,6 +102,12 @@ class Chef
 
       def action_create
         create_xml if new_resource.source.nil? || new_resource.empty?
+        case new_resource.type
+        when 'dir'
+          directory new_resource.options['path'] do
+            mode 0755
+          end.run_action(:create)
+        end
         execute "virsh pool-create /tmp/pool-#{new_resource.name}.xml" do
           command "virsh pool-create /tmp/pool-#{new_resource.name}.xml"
           not_if { exist?(new_resource.name) }
