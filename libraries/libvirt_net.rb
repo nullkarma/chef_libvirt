@@ -52,6 +52,7 @@ class Chef
   class Provider
     # libvirt network provider
     class LibvirtNet < Chef::Provider
+      provides :libvirt_net, os: ' linux'
 
       use_inline_resources
 
