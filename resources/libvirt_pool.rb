@@ -1,6 +1,7 @@
 resource_name :libvirt_pool
 provides :libvirt_pool
 
+# external properties
 property :name, String, name_property: true
 property :type, String, identity: true
 property :options, Mash, identity: true
@@ -8,6 +9,7 @@ property :source, String, identity: true
 property :uuid, String, identity: true
 property :uri, String, default: 'qemu:///system'
 
+# internal properties
 property :autostart, [true, false], default: false, identity: true
 property :active, [true, false], default: false, identity: true
 property :persistent, [true, false], default: false, identity: true
@@ -24,7 +26,7 @@ action_class do
 end
 
 load_current_value do
-  cmd = Mixlib::ShellOut.new("virsh -c #{uri} pool-info #{name}")
+  cmd = Mixlib::ShellOut.new("virsh -c #{uri} pool-info #{name}", environment: { 'LC_ALL' => nil })
   cmd.run_command
   cmd.stdout.each_line do |line|
     k, v = line.split(':', 2)
