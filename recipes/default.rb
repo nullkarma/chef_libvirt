@@ -1,8 +1,3 @@
-#include_recipe 'mdadm'
-#include_recipe 'lvm'
-#include_recipe 'filesystem'
-
-
 
 service node['libvirt']['service'] do
   action [:enable, :start]
@@ -96,7 +91,6 @@ unless node['libvirt']['data_bags'].nil?
   node.set['libvirt']['networks'] = networks
   node.set['libvirt']['pools'] = pools
   node.set['libvirt']['hooks'] = hooks
-  #include_recipe 'libvirt'
 end
 
 unless node['libvirt']['networks'].nil?
