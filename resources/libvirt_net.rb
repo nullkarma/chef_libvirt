@@ -60,44 +60,38 @@ load_current_value do
 end
 
 action :autostart do
-  if !exists?
-    Chef::Log.info("libvirt net #{name} does not exists")
-    return
-  end
   if autostart
     Chef::Log.info("libvirt net #{name} already autostarted")
     return
   end
   converge_by "virsh -c #{uri} net-autostart #{name}..." do
-    execute "virsh -c #{uri} net-autostart #{name}"
+    execute "virsh -c #{uri} net-autostart #{name}" do
+      only_if { exist? }
+    end
   end
 end
 
 action :noautostart do
-  if !exists?
-    Chef::Log.info("libvirt net #{name} does not exists")
-    return
-  end
   if !autostart
     Chef::Log.info("libvirt net #{name} already not autostarted")
     return
   end
   converge_by "virsh -c #{uri} net-autostart --disable #{name}..." do
-    execute "virsh -c #{uri} net-autostart --disable #{name}"
+    execute "virsh -c #{uri} net-autostart --disable #{name}" do
+      only_if { exist? }
+    end
   end
 end
 
 action :start do
-  if !exists?
-    Chef::Log.info("libvirt net #{name} does not exists")
-    return
-  end
   if active
     Chef::Log.info("libvirt net #{name} already started")
     return
   end
   converge_by "virsh -c #{uri} net-start #{name}..." do
-    execute "virsh -c #{uri} net-start #{name}"
+    execute "virsh -c #{uri} net-start #{name}" do
+      only_if { exist? }
+    end
   end
 end
 
@@ -106,16 +100,14 @@ action :create do
 end
 
 action :destroy do
-  if !exists?
-    Chef::Log.info("libvirt net #{name} does not exists")
-    return
-  end
   if !active
     Chef::Log.info("libvirt net #{name} already destroyed")
     return
   end
   converge_by "virsh -c #{uri} net-destroy #{name}..." do
-    execute "virsh -c #{uri} net-destroy #{name}"
+    execute "virsh -c #{uri} net-destroy #{name}" do
+      only_if { exist? }
+    end
   end
 end
 
@@ -128,15 +120,13 @@ action :define do
 end
 
 action :undefine do
-  if !exists?
-    Chef::Log.info("libvirt net #{name} does not exists")
-    return
-  end
   if !persistent
     Chef::Log.info("libvirt net #{name} does not defined")
     return
   end
   converge_by "virsh -c #{uri} net-undefine #{name}..." do
-    execute "virsh -c #{uri} net-undefine #{name}"
+    execute "virsh -c #{uri} net-undefine #{name}" do
+      only_if { exist? }
+    end
   end
 end
